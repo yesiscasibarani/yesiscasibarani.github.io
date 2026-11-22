@@ -1,42 +1,46 @@
 ---
-import type { ProjectLink } from '@/lib/projects';
-import ProjectCard from './ProjectCard.astro';
-
-interface Project {
-  name: string;
-  description: string;
-  technologies: string[];
-  links: ProjectLink[];
-  isCooking?: boolean;
-}
+import ProjectCard, { type Props as Project } from './ProjectCard.astro';
 
 const projects: Project[] = [
   {
-    name: 'Pengolahan Data & Tabel Microsoft Excel',
+    title: 'Pengolahan & Analisis Data Menggunakan Microsoft Excel',
     description:
-      'Praktik merapikan data terstruktur, penerapan rumus logika, dan ringkasan perhitungan dasar. Proyek praktik mengolah data terstruktur menggunakan Microsoft Excel untuk melatih ketelitian dan analisis data.',
-    technologies: ['Excel'],
-    links: [{ kind: 'github', url: 'https://github.com' }],
+      'Latihan pengolahan dataset statistik deskriptif, penggunaan rumus fungsi logika, serta penyajian tabel dan grafik informasi yang terstruktur.',
+    technologies: ['Microsoft Excel', 'Statistika Deskriptif', 'Analisis Data'],
+    links: [
+      {
+        kind: 'demo',
+        url: 'https://google.com',
+      },
+    ],
   },
   {
-    name: 'Tugas Komputasi & Logika Dasar Python',
+    title: 'Komputasi Dasar & Logika Algoritma dengan Python',
     description:
-      'Pengenalan pemrograman Python untuk perhitungan matematis dan konsep statistika deskriptif. Tugas kuliah yang berfokus pada pemahaman logika dasar Python untuk membantu perhitungan data kuantitatif.',
-    technologies: ['Python'],
-    links: [{ kind: 'github', url: 'https://github.com' }],
+      'Implementasi struktur kontrol percabangan, perulangan, dan perhitungan matematis dasar menggunakan bahasa pemrograman Python.',
+    technologies: ['Python', 'Algoritma', 'Pemrograman'],
+    links: [
+      {
+        kind: 'demo',
+        url: 'https://google.com',
+      },
+    ],
   },
   {
-    name: 'Esai Akademik & Analisis Kritis',
+    title: 'Penulisan Karya Ilmiah & Esai Akademik',
     description:
-      'Penulisan esai terstruktur yang melatih kemampuan menyusun argumen logis dan komunikasi ilmiah secara tertulis.',
-    technologies: ['Esai'],
-    links: [{ kind: 'github', url: 'https://github.com' }],
+      'Penyusunan esai akademik dan kajian literatur terstruktur terkait penerapan ilmu statistika dan analisis kuantitatif dalam pemecahan masalah.',
+    technologies: ['Esai Akademik', 'Literasi Data', 'Statistika'],
+    links: [
+      {
+        kind: 'demo',
+        url: 'https://google.com',
+      },
+    ],
   },
 ];
 ---
 
 <section class="section grid gap-8 md:grid-cols-2" aria-label="Projects">
-  {projects.map((project) => (
-    <ProjectCard {...project} />
-  ))}
+  {projects.map((project) => <ProjectCard {...project} />)}
 </section>
