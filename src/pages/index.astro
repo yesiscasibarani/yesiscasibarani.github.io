@@ -147,6 +147,48 @@ const highlights = [
               </Card>
             ))}
           </ul>
+          <Card class="mt-14 p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <h2 class="m-0 text-[1.4rem] font-bold text-ink">
+                Tahukah <Highlight handDrawn>Kamu?</Highlight>
+              </h2>
+              <button
+                id="btn-fact"
+                type="button"
+                class="cursor-pointer border-2 border-ink bg-accent px-4 py-2 text-sm font-bold text-bg shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
+              >
+                Acak Fakta Statistika 🎲
+              </button>
+            </div>
+            <p id="fact-text" class="mt-4 text-[1.08rem] leading-relaxed text-ink/90">
+              Kata "Statistika" berasal dari bahasa Latin <em>status</em> yang berarti negara, karena awalnya digunakan untuk mencatat data penduduk dan pajak kerajaan!
+            </p>
+          </Card>
+
+          <script>
+            const facts = [
+              'Kata "Statistika" berasal dari bahasa Latin "status" yang berarti negara, karena awalnya dipakai untuk sensus penduduk kerajaan.',
+              'Dalam kelompok berisi 23 orang saja, peluang ada 2 orang yang berulang tahun di tanggal yang sama sudah lebih dari 50% (Birthday Paradox)!',
+              'Bahasa pemrograman Python dinamai bukan dari ular piton, melainkan dari grup komedi Inggris favorit penciptanya: "Monty Python".',
+              'Rata-rata (Mean) sangat sensitif terhadap nilai ekstrem (outlier), sedangkan Median tetap kokoh di tengah.',
+              'Florence Nightingale bukan hanya perawat legendaris, tetapi juga pelopor visualisasi data statistika modern lewat diagram mawar (Coxcomb chart).',
+              'Korelasi tidak selalu berarti sebab-akibat: penjualan es krim dan jumlah orang berenang sama-sama naik di musim panas, bukan karena es krim membuat orang berenang!'
+            ];
+
+            document.addEventListener('astro:page-load', () => {
+              const btn = document.getElementById('btn-fact');
+              const textEl = document.getElementById('fact-text');
+              if (!btn || !textEl) return;
+
+              let lastIdx = 0;
+              btn.addEventListener('click', () => {
+                let nextIdx = Math.floor(Math.random() * facts.length);
+                if (nextIdx === lastIdx) nextIdx = (nextIdx + 1) % facts.length;
+                lastIdx = nextIdx;
+                textEl.textContent = facts[nextIdx];
+              });
+            });
+          </script>
         </div>
       </section>
     </main>
