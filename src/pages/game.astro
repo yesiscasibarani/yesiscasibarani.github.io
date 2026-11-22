@@ -1,0 +1,132 @@
+---
+import Card from '@/components/common/Card.astro';
+import Highlight from '@/components/common/Highlight.astro';
+import PageHero from '@/components/common/PageHero.astro';
+import Layout from '@/components/layout/Layout.astro';
+---
+
+<Layout
+  title="Mini-Game Tebak Angka — Portofolio Yesica"
+  description="Permainan tebak angka interaktif berbasis logika algoritma dan probabilitas."
+>
+  <main class="content-shell">
+    <PageHero title="Mini-Game Algoritma">
+      <p class="mt-4 max-w-2xl text-[1.15rem] leading-relaxed text-ink/85">
+        Uji insting probabilitas dan strategi pencarian binermu! Temukan angka rahasia antara <strong>1 sampai 100</strong> dalam percobaan sesedikit mungkin.
+      </p>
+    </PageHero>
+
+    <section class="section" aria-label="Game Tebak Angka">
+      <Card class="p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="m-0 text-[clamp(1.5rem,2.5vw,2rem)] leading-tight tracking-[-0.02em] text-ink">
+            Tebak <Highlight handDrawn>Angka Rahasia</Highlight>
+          </h2>
+          <span class="border-2 border-ink bg-surface px-3 py-1 font-bold text-ink">
+            Percobaan: <span id="attempt-count">0</span>
+          </span>
+        </div>
+
+        <p id="game-status" class="mt-4 text-[1.1rem] font-medium text-ink">
+          Komputer telah memilih satu angka acak dari <strong>1 – 100</strong>. Masukkan tebakanmu di bawah!
+        </p>
+
+        <form id="guess-form" class="mt-5 flex flex-wrap items-center gap-3">
+          <input
+            id="guess-input"
+            type="number"
+            min="1"
+            max="100"
+            required
+            placeholder="1 - 100"
+            class="w-36 border-2 border-ink bg-bg px-4 py-3 text-center text-[1.2rem] font-bold text-ink focus:outline-none"
+          />
+          <button
+            id="btn-guess"
+            type="submit"
+            class="cursor-pointer border-2 border-ink bg-accent px-6 py-3 font-bold text-bg shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
+          >
+            Tebak!
+          </button>
+          <button
+            id="btn-reset"
+            type="button"
+            class="cursor-pointer border-2 border-ink bg-surface px-5 py-3 font-bold text-ink shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
+          >
+            Main Lagi
+          </button>
+        </form>
+
+        <div class="mt-6">
+          <p class="text-sm font-bold text-ink/75">Riwayat Tebakanmu:</p>
+          <div id="guess-history" class="mt-2 flex flex-wrap gap-2"></div>
+        </div>
+      </Card>
+    </section>
+  </main>
+
+  <script>
+    function initGame() {
+      let secret = Math.floor(Math.random() * 100) + 1;
+      let attempts = 0;
+      let finished = false;
+
+      const form = document.getElementById('guess-form') as HTMLFormElement | null;
+      const input = document.getElementById('guess-input') as HTMLInputElement | null;
+      const statusEl = document.getElementById('game-status');
+      const countEl = document.getElementById('attempt-count');
+      const historyEl = document.getElementById('guess-history');
+      const resetBtn = document.getElementById('btn-reset');
+
+      if (!form || !input || !statusEl || !countEl || !historyEl || !resetBtn) return;
+
+      const resetGame = () => {
+        secret = Math.floor(Math.random() * 100) + 1;
+        attempts = 0;
+        finished = false;
+        countEl.textContent = '0';
+        historyEl.innerHTML = '';
+        input.value = '';
+        input.disabled = false;
+        statusEl.innerHTML =
+          'Komputer telah memilih angka acak baru dari <strong>1 – 100</strong>. Ayo mulai menebak!';
+        input.focus();
+      };
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        if (finished) return;
+
+        const val = parseInt(input.value, 10);
+        if (Number.isNaN(val) || val < 1 || val > 100) return;
+
+        attempts += 1;
+        countEl.textContent = String(attempts);
+
+        const badge = document.createElement('span');
+        badge.className = 'border border-ink bg-surface px-2.5 py-1 text-sm font-bold text-ink';
+
+        if (val === secret) {
+          finished = true;
+          input.disabled = true;
+          badge.textContent = `${val} (BENAR!)`;
+          statusEl.innerHTML = `🎉 <strong>Tepat sekali!</strong> Angkanya adalah <strong>${secret}</strong>. Kamu berhasil menebaknya dalam <strong>${attempts} percobaan</strong>!`;
+        } else if (val < secret) {
+          badge.textContent = `${val} ↑`;
+          statusEl.innerHTML = `Terlalu kecil! Coba angka yang <strong>lebih besar</strong> dari ${val}.`;
+        } else {
+          badge.textContent = `${val} ↓`;
+          statusEl.innerHTML = `Terlalu besar! Coba angka yang <strong>lebih kecil</strong> dari ${val}.`;
+        }
+
+        historyEl.appendChild(badge);
+        input.value = '';
+        input.focus();
+      };
+
+      resetBtn.onclick = resetGame;
+    }
+
+    document.addEventListener('astro:page-load', initGame);
+  </script>
+</Layout>
