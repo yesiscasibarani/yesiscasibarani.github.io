@@ -191,6 +191,49 @@ const highlights = [
           </script>
         </div>
       </section>
+      <section class="section">
+      <Card class="p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p id="dynamic-greeting" class="m-0 text-[1.08rem] font-bold text-ink">
+            Halo! Selamat datang di ruang digital saya 👋
+          </p>
+          <span class="border-2 border-ink bg-surface px-3 py-1 text-sm font-bold text-ink">
+            📍 Jayapura (WIT): <span id="jayapura-clock">--:--:--</span>
+          </span>
+        </div>
+      </Card>
+    </section>
+
+    <script>
+      document.addEventListener('astro:page-load', () => {
+        const greetEl = document.getElementById('dynamic-greeting');
+        const clockEl = document.getElementById('jayapura-clock');
+        if (!greetEl || !clockEl) return;
+
+        const updateTime = () => {
+          const now = new Date();
+          const hour = now.getHours();
+          let sapaan = 'Selamat Malam 🌙';
+          if (hour >= 4 && hour < 11) sapaan = 'Selamat Pagi ☀️';
+          else if (hour >= 11 && hour < 15) sapaan = 'Selamat Siang 🌤️';
+          else if (hour >= 15 && hour < 18) sapaan = 'Selamat Sore 🌇';
+
+          greetEl.textContent = `${sapaan}! Terima kasih sudah mampir ke portofolio Yesisca.`;
+
+          const witTime = new Intl.DateTimeFormat('id-ID', {
+            timeZone: 'Asia/Jayapura',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+          }).format(now);
+          clockEl.textContent = witTime;
+        };
+
+        updateTime();
+        setInterval(updateTime, 1000);
+      });
+    </script>
     </main>
   </HeatShimmer>
 </Layout>
