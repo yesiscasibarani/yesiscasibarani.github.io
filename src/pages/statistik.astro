@@ -1,0 +1,135 @@
+---
+import Card from '@/components/common/Card.astro';
+import Highlight from '@/components/common/Highlight.astro';
+import PageHero from '@/components/common/PageHero.astro';
+import Layout from '@/components/layout/Layout.astro';
+---
+
+<Layout
+  title="Kalkulator Statistika — Portofolio Yesica"
+  description="Alat hitung statistika deskriptif interaktif (Mean, Median, Modus, Varians, dan Standar Deviasi)."
+>
+  <main class="content-shell">
+    <PageHero title="Kalkulator Statistika">
+      <p class="mt-4 max-w-2xl text-[1.15rem] leading-relaxed text-ink/85">
+        Penerapan logika algoritma untuk menghitung ukuran pemusatan dan penyebaran data secara otomatis.
+      </p>
+    </PageHero>
+
+    <section class="section" aria-label="Kalkulator Statistika Deskriptif">
+      <Card class="p-8">
+        <h2 class="m-0 text-[clamp(1.5rem,2.5vw,2rem)] leading-tight tracking-[-0.02em] text-ink">
+          Analisis <Highlight handDrawn>Statistika Deskriptif</Highlight>
+        </h2>
+        <p class="mt-2 text-[1rem] text-ink/80">
+          Masukkan sekumpulan angka yang dipisahkan dengan tanda koma (contoh: <code>80, 85, 90, 85, 95, 75</code>).
+        </p>
+
+        <div class="mt-5 flex flex-col gap-3">
+          <label for="data-input" class="font-bold text-ink">Data Angka (n):</label>
+          <input
+            id="data-input"
+            type="text"
+            value="80, 85, 90, 85, 95, 75, 88"
+            placeholder="Contoh: 70, 80, 85, 90"
+            class="border-2 border-ink bg-bg px-4 py-3 text-[1.05rem] text-ink focus:outline-none"
+          />
+          <div>
+            <button
+              id="btn-hitung"
+              type="button"
+              class="mt-2 inline-flex cursor-pointer items-center gap-2 border-2 border-ink bg-accent px-6 py-3 font-bold text-bg shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
+            >
+              Hitung Statistik
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="border-2 border-ink bg-surface p-4">
+            <span class="text-sm font-medium text-ink/75">Jumlah Data (n)</span>
+            <p id="res-n" class="mt-1 text-2xl font-bold text-ink">-</p>
+          </div>
+          <div class="border-2 border-ink bg-surface p-4">
+            <span class="text-sm font-medium text-ink/75">Rata-rata (Mean)</span>
+            <p id="res-mean" class="mt-1 text-2xl font-bold text-ink">-</p>
+          </div>
+          <div class="border-2 border-ink bg-surface p-4">
+            <span class="text-sm font-medium text-ink/75">Nilai Tengah (Median)</span>
+            <p id="res-median" class="mt-1 text-2xl font-bold text-ink">-</p>
+          </div>
+          <div class="border-2 border-ink bg-surface p-4">
+            <span class="text-sm font-medium text-ink/75">Modus (Mode)</span>
+            <p id="res-mode" class="mt-1 text-2xl font-bold text-ink">-</p>
+          </div>
+          <div class="border-2 border-ink bg-surface p-4">
+            <span class="text-sm font-medium text-ink/75">Varians Sampel (s²)</span>
+            <p id="res-var" class="mt-1 text-2xl font-bold text-ink">-</p>
+          </div>
+          <div class="border-2 border-ink bg-surface p-4">
+            <span class="text-sm font-medium text-ink/75">Standar Deviasi (s)</span>
+            <p id="res-sd" class="mt-1 text-2xl font-bold text-ink">-</p>
+          </div>
+        </div>
+      </Card>
+    </section>
+  </main>
+
+  <script>
+    function hitungStatistik() {
+      const inputEl = document.getElementById('data-input') as HTMLInputElement | null;
+      if (!inputEl) return;
+
+      const raw = inputEl.value
+        .split(',')
+        .map((s) => parseFloat(s.trim()))
+        .filter((n) => !Number.isNaN(n));
+
+      if (raw.length === 0) {
+        alert('Masukkan minimal satu angka yang valid, dipisahkan dengan koma.');
+        return;
+      }
+
+      const sorted = [...raw].sort((a, b) => a - b);
+      const n = sorted.length;
+      const sum = sorted.reduce((acc, val) => acc + val, 0);
+      const mean = sum / n;
+
+      const mid = Math.floor(n / 2);
+      const median = n % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+
+      const freq: Record<number, number> = {};
+      let maxFreq = 0;
+      sorted.forEach((num) => {
+        freq[num] = (freq[num] || 0) + 1;
+        if (freq[num] > maxFreq) maxFreq = freq[num];
+      });
+      const modes = Object.keys(freq)
+        .filter((k) => freq[Number(k)] === maxFreq)
+        .join(', ');
+      const modeText = maxFreq === 1 ? 'Tidak ada' : modes;
+
+      const variance =
+        n > 1 ? sorted.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (n - 1) : 0;
+      const sd = Math.sqrt(variance);
+
+      const setEl = (id: string, val: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setEl('res-n', String(n));
+      setEl('res-mean', mean.toFixed(2));
+      setEl('res-median', median.toFixed(2));
+      setEl('res-mode', modeText);
+      setEl('res-var', variance.toFixed(2));
+      setEl('res-sd', sd.toFixed(2));
+    }
+
+    document.addEventListener('astro:page-load', () => {
+      const btn = document.getElementById('btn-hitung');
+      if (btn) btn.addEventListener('click', hitungStatistik);
+      hitungStatistik();
+    });
+  </script>
+</Layout>
