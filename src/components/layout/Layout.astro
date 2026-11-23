@@ -68,5 +68,20 @@ const ogImageUrl = new URL(withBase('/assets/og.png'), Astro.site).toString();
     <SearchOverlay />
 
     <SmartCursor />
+    <div id="google_translate_element" class="fixed bottom-4 left-4 z-50 border-2 border-ink bg-bg px-2 py-1 text-xs shadow-[2px_2px_0_0_var(--ink)]"></div>
+
+    <script is:inline>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'id',
+            includedLanguages: 'id,en',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          },
+          'google_translate_element'
+        );
+      }
+    </script>
+    <script is:inline src="https://google.com"></script>
   </body>
 </html>
